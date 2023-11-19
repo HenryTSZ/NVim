@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 
 import {
   IConfiguration,
+  IFlashConfiguration,
   IHighlightedYankConfiguration,
   IKeyRemapping,
   IModeSpecificStrings,
@@ -42,6 +43,14 @@ export class Configuration implements IConfiguration {
   easymotionDimBackground = true;
   easymotionMarkerFontWeight = 'bold';
   easymotionKeys = 'hklyuiopnm,qwertzxcvbasdgjf;';
+
+  flash: IFlashConfiguration = {
+    enable: false,
+    ignorecase: true,
+    labels: 'hklyuiopnm,qwertzxcvbasdgjf;',
+    marker: { backgroundColor: '#ccff88', nextMatchBackgroundColor: '#ffb86c' },
+  };
+
   targets: ITargetsConfiguration = {
     enable: false,
     bracketObjects: {

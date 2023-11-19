@@ -42,6 +42,7 @@ import { SpecialKeys } from '../util/specialKeys';
 import { SearchDecorations, getDecorationsForSearchMatchRanges } from '../util/decorationUtils';
 import { BaseOperator } from '../actions/operator';
 import { SearchByNCharCommand } from '../actions/plugins/easymotion/easymotion.cmd';
+import { createFlashDecorations } from '../actions/plugins/flash/flashDecoration';
 import { Position, Uri } from 'vscode';
 import { RemapState } from '../state/remapState';
 import * as process from 'process';
@@ -774,7 +775,8 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         this.vimState.currentMode === Mode.Normal &&
         prevMode !== Mode.SearchInProgressMode &&
         prevMode !== Mode.EasyMotionInputMode &&
-        prevMode !== Mode.EasyMotionMode
+        prevMode !== Mode.EasyMotionMode &&
+        prevMode !== Mode.FlashSearchInProgressMode
       ) {
         ranRepeatableAction = true;
       }
@@ -1187,6 +1189,8 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         this.vimState.modeData.mode === Mode.SearchInProgressMode
       ) {
         decorations = this.vimState.modeData.commandLine.getDecorations(this.vimState);
+      } else if (this.vimState.modeData.mode === Mode.FlashSearchInProgressMode) {
+        decorations = createFlashDecorations(this.vimState);
       } else if (globalState.searchState) {
         if (
           cacheKey &&
@@ -1581,9 +1585,11 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     const showHighlights =
       (configuration.incsearch &&
         (this.currentMode === Mode.SearchInProgressMode ||
-          this.currentMode === Mode.CommandlineInProgress)) ||
+          this.currentMode === Mode.CommandlineInProgress ||
+          this.currentMode === Mode.FlashSearchInProgressMode)) ||
       (configuration.inccommand && this.currentMode === Mode.CommandlineInProgress) ||
       (configuration.hlsearch && globalState.hl);
+
     for (const editor of vscode.window.visibleTextEditors) {
       const mh = this.handlerMap.get(editor.document.uri);
       if (mh) {
@@ -1620,6 +1626,10 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     if (this.currentMode === Mode.EasyMotionMode) {
       // Update all EasyMotion decorations
       this.vimState.easyMotion.updateDecorations(this.vimState.editor);
+    }
+
+    if (this.currentMode !== Mode.FlashSearchInProgressMode) {
+      this.vimState.flash.clean()
     }
 
     StatusBar.clear(this.vimState, false);
@@ -1695,6 +1705,8 @@ function getCursorType(vimState: VimState, mode: Mode): VSCodeVimCursorType {
     case Mode.VisualLine:
       return VSCodeVimCursorType.TextDecoration;
     case Mode.SearchInProgressMode:
+      return VSCodeVimCursorType.UnderlineThin;
+    case Mode.FlashSearchInProgressMode:
       return VSCodeVimCursorType.UnderlineThin;
     case Mode.CommandlineInProgress:
       return VSCodeVimCursorType.UnderlineThin;

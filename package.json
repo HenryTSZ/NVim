@@ -1,27 +1,28 @@
 {
-  "name": "vim",
-  "displayName": "Vim",
-  "description": "Vim emulation for Visual Studio Code",
+  "name": "cvim",
+  "displayName": "CVim",
+  "description": "CVim emulation for Visual Studio Code",
   "icon": "images/icon.png",
-  "version": "1.26.2",
-  "publisher": "vscodevim",
+  "version": "1.26.7",
+  "publisher": "cuixiaorui",
   "galleryBanner": {
     "color": "#e3f4ff",
     "theme": "light"
   },
   "license": "MIT",
   "keywords": [
+    "cvim",
     "vim",
     "vi",
     "vscodevim"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/VSCodeVim/Vim.git"
+    "url": "https://github.com/cuixiaorui/VSCodeVim.git"
   },
-  "homepage": "https://github.com/VSCodeVim/Vim",
+  "homepage": "https://github.com/cuixiaorui/vscodeVim/",
   "bugs": {
-    "url": "https://github.com/VSCodeVim/Vim/issues"
+    "url": "https://github.com/cuixiaorui/VSCodeVim/issues"
   },
   "engines": {
     "vscode": "^1.74.0"
@@ -621,6 +622,31 @@
           "type": "boolean",
           "markdownDescription": "Enable the [CamelCaseMotion](https://github.com/bkad/CamelCaseMotion) plugin for Vim.",
           "default": false
+        },
+        "vim.flash.enable": {
+          "type": "boolean",
+          "markdownDescription": "Enable the [Flash]() plugin for Vim.",
+          "default": false
+        },
+        "vim.flash.ignorecase": {
+          "type": "boolean",
+          "markdownDescription": "Set to consider case sensitive in search patterns",
+          "default": true
+        },
+        "vim.flash.labels": {
+          "type": "string",
+          "description": "Set the characters used for jump marker name.",
+          "default": "hklyuiopnm,qwertzxcvbasdgjf;"
+        },
+        "vim.flash.marker.backgroundColor": {
+          "type": "string",
+          "description": "The background color of the marker box.",
+          "default": "#ccff88"
+        },
+        "vim.flash.marker.nextMatchBackgroundColor": {
+          "type": "string",
+          "description": "The background color of the next marker box.",
+          "default": "#ffb86c"
         },
         "vim.easymotion": {
           "type": "boolean",

@@ -86,6 +86,13 @@ export interface ITargetsConfiguration {
   smartQuotes: ISmartQuotesConfiguration;
 }
 
+export interface IFlashConfiguration {
+  enable: boolean;
+  ignorecase: boolean;
+  labels: string;
+  marker: { backgroundColor: string; nextMatchBackgroundColor: string };
+}
+
 export interface IConfiguration {
   [key: string]: any;
 
@@ -361,6 +368,7 @@ export interface IConfiguration {
     path: string;
   };
 
+  flash: IFlashConfiguration;
   /**
    * Automatically apply the `/g` flag to substitute commands.
    */

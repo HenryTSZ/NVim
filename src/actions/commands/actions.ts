@@ -2226,6 +2226,7 @@ class ActionChangeChar extends BaseCommand {
     return (
       super.couldActionApply(vimState, keysPressed) &&
       !configuration.sneak &&
+      !configuration.flash.enable &&
       !vimState.recordedState.operator
     );
   }
