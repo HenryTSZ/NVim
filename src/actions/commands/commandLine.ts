@@ -359,7 +359,8 @@ class CommandLineLeftRight extends CommandLineAction {
     const statusBarText = this.getTrimmedStatusBarText();
     if (key === '<right>') {
       commandLine.cursorIndex = Math.min(commandLine.cursorIndex + 1, statusBarText.length);
-    } else if (key === '<left>') { commandLine.cursorIndex = Math.max(commandLine.cursorIndex - 1, 0);
+    } else if (key === '<left>') {
+      commandLine.cursorIndex = Math.max(commandLine.cursorIndex - 1, 0);
     }
   }
 }
@@ -388,7 +389,8 @@ class CommandCtrlLInSearchMode extends CommandLineAction {
     if (commandLine instanceof SearchCommandLine) {
       const currentMatch = commandLine.getCurrentMatchRange(vimState);
       if (currentMatch) {
-        const line = vimState.document.lineAt(currentMatch.range.end).text; if (currentMatch.range.end.character < line.length) {
+        const line = vimState.document.lineAt(currentMatch.range.end).text;
+        if (currentMatch.range.end.character < line.length) {
           commandLine.getSearchState().searchString += line[currentMatch.range.end.character];
           commandLine.cursorIndex++;
         }
