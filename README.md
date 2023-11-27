@@ -625,14 +625,15 @@ Provided there is a new line between the opening and closing braces / tag, it ca
 
 Based on [vim-indentwise](https://github.com/jeetsukumaran/vim-indentwise), it allows moving by indentation level. Useful in languages that don't use braces around statements (e.g. Python) but also for other languages (e.g. to move to the next line that starts at column 0)
 
-| Setting                            | Description                                                 | Type    | Default Value |
-| ---------------------------------- | ----------------------------------------------------------- | ------- | ------------- |
-| vim.indentwise                     | Enable/disable vim-indentwise                               | Boolean | false         |
+| Setting        | Description                   | Type    | Default Value |
+| -------------- | ----------------------------- | ------- | ------------- |
+| vim.indentwise | Enable/disable vim-indentwise | Boolean | false         |
 
 There are 3 main ways of moving:
-* By **relative indent level**, either to a line with less, equal or greater indent.
-* To an **absolute indent level**. If spaces are used, the number of spaces that constitute a level is taken from the tabSize editor setting.
-* To the **beginning/end of the current block** (i.e. to the last line above/first line below the next/last line with less indent than block the current line is part of). Vim-indent-object described above is another useful alternative for this.
+
+- By **relative indent level**, either to a line with less, equal or greater indent.
+- To an **absolute indent level**. If spaces are used, the number of spaces that constitute a level is taken from the tabSize editor setting.
+- To the **beginning/end of the current block** (i.e. to the last line above/first line below the next/last line with less indent than block the current line is part of). Vim-indent-object described above is another useful alternative for this.
 
 In all modes, empty lines are ignored and never jumped to (use the jump by paragraph motion to go to empty lines).
 
