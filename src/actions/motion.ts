@@ -676,7 +676,7 @@ class PrevMarkLinewise extends BaseMovement {
   }
 }
 
-async function ensureEditorIsActive(document: vscode.TextDocument) {
+export async function ensureEditorIsActive(document: vscode.TextDocument) {
   if (document !== vscode.window.activeTextEditor?.document) {
     await vscode.window.showTextDocument(document);
   }

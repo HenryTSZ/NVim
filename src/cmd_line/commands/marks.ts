@@ -1,4 +1,4 @@
-import { commands, window, QuickPickItem } from 'vscode';
+import { window, QuickPickItem } from 'vscode';
 
 import { VimState } from '../../state/vimState';
 import { IMark } from '../../history/historyTracker';
@@ -6,6 +6,7 @@ import { Cursor } from '../../common/motion/cursor';
 import { ErrorCode, VimError } from '../../error';
 import { ExCommand } from '../../vimscript/exCommand';
 import { alt, noneOf, optWhitespace, Parser, regexp, seq, string, whitespace } from 'parsimmon';
+import { ensureEditorIsActive } from '../../actions/motion';
 
 class MarkQuickPickItem implements QuickPickItem {
   mark: IMark;
@@ -53,10 +54,11 @@ export class MarksCommand extends ExCommand {
         canPickMany: false,
       });
       if (item) {
-        if (item.mark.isUppercaseMark) {
-          commands.executeCommand('vscode.open', item.mark.document?.uri);
+        const { isUppercaseMark, document, position } = item.mark;
+        if (isUppercaseMark && document) {
+          await ensureEditorIsActive(document);
         }
-        vimState.cursors = [new Cursor(item.mark.position, item.mark.position)];
+        vimState.cursors = [new Cursor(position, position)];
       }
     } else {
       window.showInformationMessage('No marks set');

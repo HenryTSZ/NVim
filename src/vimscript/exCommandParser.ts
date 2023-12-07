@@ -331,10 +331,7 @@ export const builtinExCommands: ReadonlyArray<[[string, string], ArgParser | und
   [['lp', 'revious'], succeed(new VsCodeCommand('editor.action.previousCommentThreadAction'))],
   [['lpf', 'ile'], undefined],
   [['lr', 'ewind'], undefined],
-  [
-    ['ls', ''],
-    succeed(new VsCodeCommand('workbench.action.quickOpenLeastRecentlyUsedEditorInGroup')),
-  ],
+  [['ls', ''], succeed(new VsCodeCommand('workbench.action.showAllEditors'))],
   [['lt', 'ag'], undefined],
   [['lu', 'nmap'], undefined],
   [['lua', ''], undefined],
