@@ -1,5 +1,51 @@
 # Change Log
 
+## [v2.0.6](https://github.com/HenryTSZ/NVim/tree/v2.0.6) (2023-11-30)
+
+### Fixed
+
+- [Fix: Cursor position is broken at v1.26.0](https://github.com/VSCodeVim/Vim/pull/8756)
+
+## [v2.0.5](https://github.com/HenryTSZ/NVim/tree/v2.0.5) (2023-11-28)
+
+### Added
+
+- [Added Langmap Feature](https://github.com/VSCodeVim/Vim/pull/8541)
+
+## [v2.0.4](https://github.com/HenryTSZ/NVim/tree/v2.0.4) (2023-11-24)
+
+### Fixed
+
+- [Do not revert to a single cursor when escape is pressed after a block selection](https://github.com/VSCodeVim/Vim/pull/8510)
+
+## [v2.0.3](https://github.com/HenryTSZ/NVim/tree/v2.0.3) (2023-11-23)
+
+### Fixed
+
+- [Fix: avoid escaping the exact word search twice](https://github.com/VSCodeVim/Vim/pull/8566)
+
+## [v2.0.2](https://github.com/HenryTSZ/NVim/tree/v2.0.2) (2023-11-21)
+
+### Fixed
+
+- [Fix: only create new file on split when specified](https://github.com/VSCodeVim/Vim/pull/8733)
+
+## [v2.0.1](https://github.com/HenryTSZ/NVim/tree/v2.0.1) (2023-11-20)
+
+### Added
+
+- [Add new plugin: vim-indentwise](https://github.com/VSCodeVim/Vim/pull/7668)
+
+## [v2.0.0](https://github.com/HenryTSZ/NVim/tree/v2.0.0) (2023-11-20)
+
+### Added
+
+- Add [flash](https://github.com/cuixiaorui/VSCodeVim/tree/flash)
+
+### Fixed
+
+- Fix [VSCodeVim#8576](https://github.com/VSCodeVim/Vim/issues/8576) Cursor position is broken at v1.26.0
+
 ## [v1.27.0](https://github.com/vscodevim/vim/tree/v1.27.0) (2023-11-17)
 
 ### Added
