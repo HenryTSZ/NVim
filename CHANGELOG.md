@@ -1,5 +1,15 @@
 # Change Log
 
+## [v2.0.7](https://github.com/HenryTSZ/NVim/tree/v2.0.7) (2023-12-07)
+
+### Added
+
+- [add ls command](https://github.com/VSCodeVim/Vim/pull/8761)
+
+### Fixed
+
+- [fixes #7859 #5582: support global mark jumping](https://github.com/VSCodeVim/Vim/pull/7876)
+
 ## [v2.0.6](https://github.com/HenryTSZ/NVim/tree/v2.0.6) (2023-11-30)
 
 ### Fixed
