@@ -339,12 +339,6 @@ class Configuration implements IConfiguration {
     disabled: '-- VIM: DISABLED --',
   };
 
-  debug: IDebugConfiguration = {
-    silent: false,
-    loggingLevelForAlert: 'error',
-    loggingLevelForConsole: 'error',
-  };
- 
   searchHighlightColor = '';
   searchHighlightTextColor = '';
 
@@ -578,7 +572,7 @@ function overlapSetting(args: {
         this.getConfiguration('editor').update(
           args.settingName,
           value,
-          vscode.ConfigurationTarget.Global
+          vscode.ConfigurationTarget.Global,
         );
       },
       enumerable: true,

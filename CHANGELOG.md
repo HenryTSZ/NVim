@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.0.8](https://github.com/HenryTSZ/NVim/tree/v2.0.8) (2023-12-08)
+
+### Added
+
+- [Added config options to customise status bar text.](https://github.com/VSCodeVim/Vim/pull/7770)
+- [Enable vim plugins for web extension](https://github.com/VSCodeVim/Vim/pull/7728)
+
 ## [v2.0.7](https://github.com/HenryTSZ/NVim/tree/v2.0.7) (2023-12-07)
 
 ### Added
