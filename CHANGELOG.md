@@ -62,6 +62,23 @@
 ### Fixed
 
 - Fix [VSCodeVim#8576](https://github.com/VSCodeVim/Vim/issues/8576) Cursor position is broken at v1.26.0
+## [v1.27.2](https://github.com/vscodevim/vim/tree/v1.27.2) (2023-12-22)
+
+### Added
+
+- Map `:ls` to `workbench.action.quickOpenLeastRecentlyUsedEditorInGroup` ([@riyuejiuzhao](https://github.com/riyuejiuzhao)).
+
+### Fixed
+
+- Fix scrolling when `editor.smoothScrolling` is enabled ([@zhuowei](https://github.com/zhuowei)).
+- Fix cursor movement when `vim.foldfix` is enabled ([@HenryTSZ](https://github.com/HenryTSZ)).
+- Fix `editor.action.smartSelection.expand` command in VisualLine mode ([@rogeryk](https://github.com/rogeryk)).
+
+## [v1.27.1](https://github.com/vscodevim/vim/tree/v1.27.1) (2023-11-22)
+
+### Fixed
+
+- Fix `:sp[lit]` and `:vs[plit]` with no file name ([@bcho](https://github.com/bcho)).
 
 ## [v1.27.0](https://github.com/vscodevim/vim/tree/v1.27.0) (2023-11-17)
 

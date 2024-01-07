@@ -1,11 +1,12 @@
-import { window, QuickPickItem } from 'vscode';
+import { QuickPickItem, window } from 'vscode';
 
-import { VimState } from '../../state/vimState';
-import { IMark } from '../../history/historyTracker';
+// eslint-disable-next-line id-denylist
+import { Parser, alt, noneOf, optWhitespace, regexp, seq, string, whitespace } from 'parsimmon';
 import { Cursor } from '../../common/motion/cursor';
 import { ErrorCode, VimError } from '../../error';
+import { IMark } from '../../history/historyTracker';
+import { VimState } from '../../state/vimState';
 import { ExCommand } from '../../vimscript/exCommand';
-import { alt, noneOf, optWhitespace, Parser, regexp, seq, string, whitespace } from 'parsimmon';
 import { ensureEditorIsActive } from '../../actions/motion';
 
 class MarkQuickPickItem implements QuickPickItem {
@@ -61,7 +62,7 @@ export class MarksCommand extends ExCommand {
         vimState.cursors = [new Cursor(position, position)];
       }
     } else {
-      window.showInformationMessage('No marks set');
+      void window.showInformationMessage('No marks set');
     }
   }
 }
