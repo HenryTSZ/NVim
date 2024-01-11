@@ -77,6 +77,7 @@ export class Configuration implements IConfiguration {
   history = 50;
   incsearch = true;
   inccommand = '' as const;
+  openFilePosition = 'relative' as const;
   startInInsertMode = false;
   statusBarColorControl = false;
   statusBarColors: IModeSpecificStrings<string | string[]> = {

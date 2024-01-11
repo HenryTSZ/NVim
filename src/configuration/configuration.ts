@@ -315,6 +315,8 @@ class Configuration implements IConfiguration {
 
   inccommand: '' | 'append' | 'replace' = '';
 
+  openFilePosition: 'relative' | 'absolute' = 'relative';
+
   incsearch = true;
 
   startInInsertMode = false;
