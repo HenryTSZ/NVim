@@ -1,5 +1,15 @@
 # Change Log
 
+## [v2.1.0](https://github.com/HenryTSZ/NVim/tree/v2.1.0) (2024-01-11)
+
+### Fixed
+
+- [fixes #8787 add vim.openFilePosition](https://github.com/VSCodeVim/Vim/pull/8819)
+
+## [v2.0.9](https://github.com/HenryTSZ/NVim/tree/v2.0.9) (2024-01-07)
+
+- merge Vim/master
+
 ## [v2.0.8](https://github.com/HenryTSZ/NVim/tree/v2.0.8) (2023-12-08)
 
 ### Added
@@ -62,6 +72,7 @@
 ### Fixed
 
 - Fix [VSCodeVim#8576](https://github.com/VSCodeVim/Vim/issues/8576) Cursor position is broken at v1.26.0
+
 ## [v1.27.2](https://github.com/vscodevim/vim/tree/v1.27.2) (2023-12-22)
 
 ### Added
