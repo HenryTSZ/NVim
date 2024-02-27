@@ -35,6 +35,15 @@ VSCodeVim is a Vim emulator for [Visual Studio Code](https://code.visualstudio.c
 - [🔌 Emulated Plugins](#-emulated-plugins)
   - [vim-airline](#vim-airline)
   - [vim-easymotion](#vim-easymotion)
+  - [vim-flash](#vim-flash)
+    - [The most basic usage method](#the-most-basic-usage-method)
+    - [Support displaying the currently entered search character in StatusBar](#support-displaying-the-currently-entered-search-character-in-statusbar)
+    - [Support recording jump points](#support-recording-jump-points)
+    - [Support visualization mode](#support-visualization-mode)
+    - [Support operator](#support-operator)
+    - [Support automatic jump to the next marker point with a carriage return](#support-automatic-jump-to-the-next-marker-point-with-a-carriage-return)
+    - [Support previous search](#support-previous-search)
+    - [Want to use native f functionality?](#want-to-use-native-f-functionality)
   - [vim-surround](#vim-surround)
   - [vim-commentary](#vim-commentary)
   - [vim-indent-object](#vim-indent-object)
@@ -576,6 +585,60 @@ Once easymotion is active, initiate motions using the following commands. After 
 The difference is character count required for search.
 For example, `<leader><leader> 2s <char><char>` requires two characters, and search by two characters.
 This mapping is not a standard mapping, so it is recommended to use your custom mapping.
+
+### vim-flash
+
+Based on [flash.nvim](https://github.com/folke/flash.nvim) and configured through the following settings:
+
+| Setting                                   | Description                                       | Type    | Default Value                  |
+| ----------------------------------------- | ------------------------------------------------- | ------- | ------------------------------ |
+| vim.flash.enable                          | Enable the Flash plugin for Vim.                  | Boolean | false                          |
+| vim.flash.ignorecase                      | Set to consider case sensitive in search patterns | Boolean | true                           |
+| vim.flash.labels                          | Set the characters used for jump marker name.     | String  | 'hklyuiopnm,qwertzxcvbasdgjf;' |
+| vim.flash.marker.backgroundColor          | The background color of the marker box.           | String  | '#ccff88'                      |
+| vim.flash.marker.nextMatchBackgroundColor | The background color of the next marker box.      | String  | '#ffb86c'                      |
+
+#### The most basic usage method
+
+The most basic way to use flash is: `f` + `search characters` + `marker point label`
+
+#### Support displaying the currently entered search character in StatusBar
+
+To maintain consistency with `/` search, the current input character will be displayed during search
+
+#### Support recording jump points
+
+After using flash to jump, it will be recorded in the jump list. So this means that you can jump back to the previous position through `ctrl+o/i`
+
+#### Support visualization mode
+
+flash can also be used in conjunction with visualization mode
+
+Just press `v` and then press `f` + `the search character`
+
+#### Support operator
+
+flash also supports operators
+
+Now you can use it in conjunction with operators such as `d` `y`
+
+#### Support automatic jump to the next marker point with a carriage return
+
+If you want to jump directly to the next marker point, Just press the enter key directly, Here, different background colors have been added to indicate the next marker point
+
+#### Support previous search
+
+Sometimes I still want to search for the previous search character, but I am too lazy to input it repeatedly
+
+All you need to do is press `f` + `enter`
+
+The previous search record will only be recorded after a successful challenge
+
+If there is no previous search record, a prompt will be given
+
+#### Want to use native f functionality?
+
+Just enter `\,` everything is the same as before
 
 ### vim-surround
 
