@@ -3,7 +3,7 @@
   "displayName": "NVim",
   "description": "NVim emulation for Visual Studio Code",
   "icon": "images/icon.png",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "publisher": "HenryTsz",
   "galleryBanner": {
     "color": "#e3f4ff",
