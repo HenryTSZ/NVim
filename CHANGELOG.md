@@ -1,5 +1,17 @@
 # Change Log
 
+## [v2.1.2](https://github.com/HenryTSZ/NVim/tree/v2.1.2) (2024-03-01)
+
+### Fixed
+
+- [Fix: #8418 Fix <C-i> Vim keybinding for Normal mode](https://github.com/VSCodeVim/Vim/pull/8767)
+
+## [v2.1.1](https://github.com/HenryTSZ/NVim/tree/v2.1.1) (2024-02-27)
+
+### Added
+
+added flash usage
+
 ## [v2.1.0](https://github.com/HenryTSZ/NVim/tree/v2.1.0) (2024-01-11)
 
 ### Fixed
