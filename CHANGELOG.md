@@ -10,7 +10,7 @@
 
 ### Added
 
-added flash usage
+[added flash usage](https://github.com/HenryTSZ/NVim/tree/v2.1.1?tab=readme-ov-file#vim-flash)
 
 ## [v2.1.0](https://github.com/HenryTSZ/NVim/tree/v2.1.0) (2024-01-11)
 
