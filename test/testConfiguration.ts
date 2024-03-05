@@ -13,7 +13,9 @@ export class Configuration implements IConfiguration {
   [key: string]: any;
 
   useSystemClipboard = false;
+  killRingMax = 120;
   useCtrlKeys = false;
+  useAltKeys = false;
   overrideCopy = true;
   textwidth = 80;
   hlsearch = false;
