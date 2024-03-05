@@ -1,5 +1,13 @@
 # Change Log
 
+## [v2.1.3](https://github.com/HenryTSZ/NVim/tree/v2.1.3) (2024-03-05)
+
+### Added
+
+- [Killring support](https://github.com/VSCodeVim/Vim/pull/8803)
+
+This PR is to support kill ring feature, and default binding to activate yanking from kill ring (A-y).
+
 ## [v2.1.2](https://github.com/HenryTSZ/NVim/tree/v2.1.2) (2024-03-01)
 
 ### Fixed
