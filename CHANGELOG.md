@@ -1,5 +1,11 @@
 # Change Log
 
+## [v2.1.4](https://github.com/HenryTSZ/NVim/tree/v2.1.4) (2024-03-19)
+
+### Fixed
+
+- [Fix #8935 Special marks like '<' won't display in gutter](https://github.com/VSCodeVim/Vim/pull/8936)
+
 ## [v2.1.3](https://github.com/HenryTSZ/NVim/tree/v2.1.3) (2024-03-05)
 
 ### Added
