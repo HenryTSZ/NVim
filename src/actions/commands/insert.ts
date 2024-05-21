@@ -148,6 +148,7 @@ export class CommandInsertPreviousText extends BaseCommand {
 
     vimState.recordedState.transformer.addTransformation({
       type: 'replayRecordedState',
+      count: 1,
       recordedState,
     });
   }
@@ -514,10 +515,8 @@ class AltYInInsertMode extends BaseCommand {
   keys = ['<A-y>'];
 
   public override async exec(position: Position, vimState: VimState): Promise<void> {
-    const text = await vscode.window.showQuickPick([
-      ...new Set(globalState.killRing.reverse()),
-    ], {
-      placeHolder: "Choose which kill to yank"
+    const text = await vscode.window.showQuickPick([...new Set(globalState.killRing.reverse())], {
+      placeHolder: 'Choose which kill to yank',
     });
 
     if (text) {

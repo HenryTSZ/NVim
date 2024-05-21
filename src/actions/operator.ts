@@ -7,7 +7,7 @@ import { ExCommandLine } from './../cmd_line/commandLine';
 import { Cursor } from './../common/motion/cursor';
 import { PositionDiff, earlierOf, sorted } from './../common/motion/position';
 import { configuration } from './../configuration/configuration';
-import { Mode, isVisualMode } from './../mode/mode';
+import { DotCommandStatus, Mode, isVisualMode } from './../mode/mode';
 import { Register, RegisterMode } from './../register/register';
 import { VimState } from './../state/vimState';
 import { TextEditor } from './../textEditor';
@@ -134,8 +134,8 @@ export class DeleteOperator extends BaseOperator {
       text = text.endsWith('\r\n')
         ? text.slice(0, -2)
         : text.endsWith('\n')
-        ? text.slice(0, -1)
-        : text;
+          ? text.slice(0, -1)
+          : text;
     }
     Register.put(vimState, text, this.multicursorIndex, true);
     // Put into kill ring
@@ -463,7 +463,10 @@ class IndentOperatorVisualAndVisualLine extends BaseOperator {
 
   public async run(vimState: VimState, start: Position, end: Position): Promise<void> {
     // Repeating this command with dot should apply the indent to the previous selection
-    if (vimState.isRunningDotCommand && vimState.dotCommandPreviousVisualSelection) {
+    if (
+      vimState.dotCommandStatus === DotCommandStatus.Executing &&
+      vimState.dotCommandPreviousVisualSelection
+    ) {
       if (vimState.cursorStartPosition.isAfter(vimState.cursorStopPosition)) {
         const shiftSelectionByNum =
           vimState.dotCommandPreviousVisualSelection.end.line -
@@ -496,7 +499,10 @@ class IndentOperatorVisualBlock extends BaseOperator {
      * block formed by extending the cursor start position downward by the number of lines
      * in the previous visual block selection.
      */
-    if (vimState.isRunningDotCommand && vimState.dotCommandPreviousVisualSelection) {
+    if (
+      vimState.dotCommandStatus === DotCommandStatus.Executing &&
+      vimState.dotCommandPreviousVisualSelection
+    ) {
       const shiftSelectionByNum = Math.abs(
         vimState.dotCommandPreviousVisualSelection.end.line -
           vimState.dotCommandPreviousVisualSelection.start.line,
@@ -553,7 +559,10 @@ class OutdentOperatorVisualAndVisualLine extends BaseOperator {
 
   public async run(vimState: VimState, start: Position, end: Position): Promise<void> {
     // Repeating this command with dot should apply the indent to the previous selection
-    if (vimState.isRunningDotCommand && vimState.dotCommandPreviousVisualSelection) {
+    if (
+      vimState.dotCommandStatus === DotCommandStatus.Executing &&
+      vimState.dotCommandPreviousVisualSelection
+    ) {
       if (vimState.cursorStartPosition.isAfter(vimState.cursorStopPosition)) {
         const shiftSelectionByNum =
           vimState.dotCommandPreviousVisualSelection.end.line -
@@ -589,7 +598,10 @@ class OutdentOperatorVisualBlock extends BaseOperator {
      * block formed by extending the cursor start position downward by the number of lines
      * in the previous visual block selection.
      */
-    if (vimState.isRunningDotCommand && vimState.dotCommandPreviousVisualSelection) {
+    if (
+      vimState.dotCommandStatus === DotCommandStatus.Executing &&
+      vimState.dotCommandPreviousVisualSelection
+    ) {
       const shiftSelectionByNum = Math.abs(
         vimState.dotCommandPreviousVisualSelection.end.line -
           vimState.dotCommandPreviousVisualSelection.start.line,
@@ -707,7 +719,7 @@ class YankVisualBlockMode extends BaseOperator {
 
     this.highlightYankedRanges(vimState, ranges);
 
-    const text = lines.join('\n')
+    const text = lines.join('\n');
     Register.put(vimState, text, this.multicursorIndex, true);
     // Put into kill ring
     vimState.historyTracker.yankToKillRing(text);

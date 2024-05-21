@@ -15,7 +15,7 @@ export enum Mode {
   SurroundInputMode,
   OperatorPendingMode, // Pseudo-Mode, used only when remapping. DON'T SET TO THIS MODE
   Disabled,
-  FlashSearchInProgressMode
+  FlashSearchInProgressMode,
 }
 
 export enum VSCodeVimCursorType {
@@ -26,6 +26,17 @@ export enum VSCodeVimCursorType {
   TextDecoration,
   Native,
   UnderlineThin,
+}
+
+export enum DotCommandStatus {
+  Waiting,
+  Executing,
+  Finished,
+}
+
+export enum ReplayMode {
+  Insert,
+  Replace,
 }
 
 /**

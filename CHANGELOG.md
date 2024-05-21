@@ -1,5 +1,27 @@
 # Change Log
 
+## [v2.1.5](https://github.com/HenryTSZ/NVim/tree/v2.1.5) (2024-05-21)
+
+merge VSCodeVim/master
+
+### Added
+
+- Custom digraphs can be added via `:dig[raphs]` ([@J-Fields](https://github.com/J-Fields)).
+- `:Ex[plore]` is mapped to `workbench.view.explorer` ([@JaiminBrahmbhatt](https://github.com/JaiminBrahmbhatt)).
+
+### Changed
+
+- When used with a count, `<C-d>` and `<C-u>` set the `scroll` option to the count ([@ontanj](https://github.com/ontanj)).
+
+### Fixed
+
+- Fix `:s[ubstitute]` with the `n` flag moving cursor ([@J-Fields](https://github.com/J-Fields)).
+- Fix special marks displaying in gutter ([@shinohara-rin](https://github.com/shinohara-rin)).
+- Fix several edge cases of `<C-o>` ([@harunou](https://github.com/harunou)).
+- Fix incorrect digraph mappings ([@mlbykn](https://github.com/mlbykn)).
+- Fix `gv` after visual selection with mouse or command ([@zyd2001](https://github.com/zyd2001)).
+- Fix `gv` being unaffected by `m<` and `m>` ([@J-Fields](https://github.com/J-Fields)).
+
 ## [v2.1.4](https://github.com/HenryTSZ/NVim/tree/v2.1.4) (2024-03-19)
 
 ### Fixed
@@ -98,6 +120,26 @@ This PR is to support kill ring feature, and default binding to activate yanking
 ### Fixed
 
 - Fix [VSCodeVim#8576](https://github.com/VSCodeVim/Vim/issues/8576) Cursor position is broken at v1.26.0
+
+## [v1.27.3](https://github.com/vscodevim/vim/tree/v1.27.3) (2024-05-20)
+
+### Added
+
+- Custom digraphs can be added via `:dig[raphs]` ([@J-Fields](https://github.com/J-Fields)).
+- `:Ex[plore]` is mapped to `workbench.view.explorer` ([@JaiminBrahmbhatt](https://github.com/JaiminBrahmbhatt)).
+
+### Changed
+
+- When used with a count, `<C-d>` and `<C-u>` set the `scroll` option to the count ([@ontanj](https://github.com/ontanj)).
+
+### Fixed
+
+- Fix `:s[ubstitute]` with the `n` flag moving cursor ([@J-Fields](https://github.com/J-Fields)).
+- Fix special marks displaying in gutter ([@shinohara-rin](https://github.com/shinohara-rin)).
+- Fix several edge cases of `<C-o>` ([@harunou](https://github.com/harunou)).
+- Fix incorrect digraph mappings ([@mlbykn](https://github.com/mlbykn)).
+- Fix `gv` after visual selection with mouse or command ([@zyd2001](https://github.com/zyd2001)).
+- Fix `gv` being unaffected by `m<` and `m>` ([@J-Fields](https://github.com/J-Fields)).
 
 ## [v1.27.2](https://github.com/vscodevim/vim/tree/v1.27.2) (2023-12-22)
 
