@@ -1,5 +1,16 @@
 # Change Log
 
+## [v2.1.6](https://github.com/HenryTSZ/NVim/tree/v2.1.6) (2024-05-23)
+
+### Added
+
+- [add a textobject:SelectAttrs i-r/a-r](https://github.com/VSCodeVim/Vim/pull/9037)
+- [Add `gB` keybinding for finding the previous match](https://github.com/VSCodeVim/Vim/pull/9008)
+
+### Fixed
+
+- [Wrong cursor orientation after adding multi-cursor selection](https://github.com/VSCodeVim/Vim/issues/9000)
+
 ## [v2.1.5](https://github.com/HenryTSZ/NVim/tree/v2.1.5) (2024-05-21)
 
 merge VSCodeVim/master
