@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.1.7](https://github.com/HenryTSZ/NVim/tree/v2.1.7) (2024-06-12)
+
+### Fixed
+
+- [`<C-w> + v and <C-w> + s split pane not working on VSCode 1.90`](https://github.com/VSCodeVim/Vim/issues/9061)
+- [`easymotionDimColor` has no effect](https://github.com/VSCodeVim/Vim/issues/9006)
+
 ## [v2.1.6](https://github.com/HenryTSZ/NVim/tree/v2.1.6) (2024-05-23)
 
 ### Added
