@@ -180,15 +180,18 @@ export function getNextMatchMarker(searchString: string, position: vscode.Positi
   return markers[0];
 }
 
-let id = 0;
+let _id = 0;
 export function createMarkers(matches: Match[], labels: string[], editor: vscode.TextEditor) {
   return matches.map(({ range }, index) => {
     const label = labels[index] || '';
-    return new Marker(range, label, editor, id++);
+    return new Marker(range, label, editor, _id++);
   });
 }
 
-export function createMarkerLabels(matchRanges: Array<{ range: vscode.Range }>, vimState: VimState) {
+export function createMarkerLabels(
+  matchRanges: Array<{ range: vscode.Range }>,
+  vimState: VimState,
+) {
   const nextSearchChatList = Array.from(
     new Set(
       matchRanges.map(({ range }) => {
@@ -207,7 +210,7 @@ export function getNextSearchChat(range: vscode.Range, vimState: VimState) {
     range.end,
     new vscode.Position(range.end.line, range.end.character + 1),
   );
-  return vimState.document.getText(nextRange)
+  return vimState.document.getText(nextRange);
 }
 
 const markersMap: Record<string, Marker[]> = {};
