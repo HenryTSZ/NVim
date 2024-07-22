@@ -192,15 +192,20 @@ export function createMarkerLabels(
   matchRanges: Array<{ range: vscode.Range }>,
   vimState: VimState,
 ) {
+  const { ignorecase, labels } = configuration.flash;
+
   const nextSearchChatList = Array.from(
     new Set(
       matchRanges.map(({ range }) => {
-        return getNextSearchChat(range, vimState);
+        const nextSearchChat = getNextSearchChat(range, vimState);
+        return ignorecase ? nextSearchChat.toLocaleLowerCase() : nextSearchChat;
       }),
     ),
   );
 
-  return configuration.flash.labels.split('').filter((s) => {
+  const labelList = ignorecase ? labels.toLocaleLowerCase().split('') : labels.split('');
+
+  return labelList.filter((s) => {
     return !nextSearchChatList.includes(s);
   });
 }
