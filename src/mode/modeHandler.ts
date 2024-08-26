@@ -31,6 +31,7 @@ import {
   CommandInsertAtCursor,
   CommandNumber,
   CommandQuitRecordMacro,
+  CommandRegister,
   DocumentContentChangeAction,
 } from './../actions/commands/actions';
 import {
@@ -53,6 +54,7 @@ import { TextEditor } from './../textEditor';
 import {
   DotCommandStatus,
   Mode,
+  NormalCommandState,
   ReplayMode,
   VSCodeVimCursorType,
   getCursorStyle,
@@ -649,6 +651,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
 
     const recordedState = this.vimState.recordedState;
     recordedState.actionKeys.push(key);
+    void VSCodeContext.set('vim.command', recordedState.commandString);
 
     const action = getRelevantAction(recordedState.actionKeys, this.vimState);
     switch (action) {
@@ -660,6 +663,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         }
         // Since there is no possible action we are no longer waiting any action keys
         this.vimState.recordedState.waitingForAnotherActionKey = false;
+        void VSCodeContext.set('vim.command', '');
 
         return false;
       case KeypressState.WaitingOnKeys:
@@ -799,6 +803,10 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
       if (action.createsUndoPoint) {
         ranRepeatableAction = true;
       }
+
+      if (this.vimState.normalCommandState === NormalCommandState.Finished) {
+        ranRepeatableAction = true;
+      }
     } else if (action instanceof BaseOperator) {
       recordedState.operatorCount = recordedState.count;
     } else {
@@ -817,7 +825,11 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         prevMode !== Mode.SearchInProgressMode &&
         prevMode !== Mode.EasyMotionInputMode &&
         prevMode !== Mode.EasyMotionMode &&
-        prevMode !== Mode.FlashSearchInProgressMode
+        prevMode !== Mode.FlashSearchInProgressMode &&
+        !(
+          prevMode === Mode.CommandlineInProgress &&
+          this.vimState.normalCommandState === NormalCommandState.Executing
+        )
       ) {
         ranRepeatableAction = true;
       }
@@ -940,10 +952,15 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     if (
       ranRepeatableAction &&
       !this.vimState.isReplayingMacro &&
+      this.vimState.normalCommandState !== NormalCommandState.Executing &&
       this.vimState.dotCommandStatus !== DotCommandStatus.Executing &&
       !this.remapState.isCurrentlyPerformingRemapping
     ) {
       this.vimState.historyTracker.finishCurrentStep();
+    }
+
+    if (this.vimState.normalCommandState === NormalCommandState.Finished) {
+      this.vimState.normalCommandState = NormalCommandState.Waiting;
     }
 
     recordedState.actionKeys = [];
@@ -1193,6 +1210,12 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
       replayMode = ReplayMode.Insert;
     } else if (actions[0] instanceof ActionReplaceCharacter) {
       replayMode = ReplayMode.Replace;
+    } else if (actions[0] instanceof CommandRegister) {
+      // Increment numbered registers "1 to "9.
+      const keyPressed = Number(actions[0].keysPressed[1]);
+      if (!isNaN(keyPressed) && keyPressed > 0 && keyPressed < 9) {
+        actions[0].keysPressed[1] = String(keyPressed + 1);
+      }
     }
     for (let j = 0; j < transformation.count; j++) {
       recordedState = new RecordedState();

@@ -28,6 +28,12 @@ export enum VSCodeVimCursorType {
   UnderlineThin,
 }
 
+export enum NormalCommandState {
+  Waiting,
+  Executing,
+  Finished,
+}
+
 export enum DotCommandStatus {
   Waiting,
   Executing,
