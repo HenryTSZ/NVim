@@ -28,6 +28,7 @@ import { VSCodeContext } from '../util/vscodeContext';
 import { BaseAction, BaseCommand, KeypressState, getRelevantAction } from './../actions/base';
 import {
   ActionOverrideCmdD,
+  ActionPreviousFindMatch,
   ActionReplaceCharacter,
   CommandInsertAtCursor,
   CommandNumber,
@@ -1505,10 +1506,11 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
        * It is meant as a patch to #880.
        * Extend this condition if it is the desired behaviour for other actions as well.
        */
+      const lastActionRun =
+        this.vimState.recordedState.actionsRun[this.vimState.recordedState.actionsRun.length - 1];
       const isLastCursorTracked =
-        this.vimState.recordedState.actionsRun[
-          this.vimState.recordedState.actionsRun.length - 1
-        ] instanceof ActionOverrideCmdD;
+        lastActionRun instanceof ActionOverrideCmdD ||
+        lastActionRun instanceof ActionPreviousFindMatch;
 
       let cursorToTrack: Cursor;
       if (isLastCursorTracked) {
