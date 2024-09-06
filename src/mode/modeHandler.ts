@@ -5,6 +5,7 @@ import * as process from 'process';
 import { Position, Range, Uri } from 'vscode';
 import { BaseMovement } from '../actions/baseMotion';
 import { BaseOperator } from '../actions/operator';
+import { createFlashDecorations } from '../actions/plugins/flash/flashDecoration';
 import { EasyMotion } from '../actions/plugins/easymotion/easymotion';
 import { SearchByNCharCommand } from '../actions/plugins/easymotion/easymotion.cmd';
 import { IBaseAction } from '../actions/types';
@@ -48,7 +49,6 @@ import { ForceStopRemappingError, VimError } from './../error';
 import { Register, RegisterMode } from './../register/register';
 import { RecordedState } from './../state/recordedState';
 import { VimState } from './../state/vimState';
-import { createFlashDecorations } from '../actions/plugins/flash/flashDecoration';
 import { Langmap } from '../configuration/langmap';
 import { TextEditor } from './../textEditor';
 import {

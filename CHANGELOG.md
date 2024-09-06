@@ -2,6 +2,10 @@
 
 ## [v2.1.8](https://github.com/HenryTSZ/NVim/tree/v2.1.8) (2024-08-26)
 
+### Fixed
+
+- [add easymotionSearchLines](https://github.com/VSCodeVim/Vim/issues/8783)
+
 merge VSCodeVim/master
 
 ### Added
