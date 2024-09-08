@@ -1,14 +1,15 @@
-import { Configuration } from '../testConfiguration';
 import { newTest } from '../testSimplifier';
 import { cleanUpWorkspace, setupWorkspace } from '../testUtils';
 
 suite('flash plugin', () => {
-  suiteSetup(async () => {
+  setup(async () => {
     await setupWorkspace({
       config: {
         flash: {
-          ...new Configuration().flash,
           enable: true,
+          ignorecase: true,
+          labels: 'hklyuiopnm,qwertzxcvbasdgjf;',
+          marker: { backgroundColor: '#ccff88', nextMatchBackgroundColor: '#ffb86c' },
         },
       },
     });

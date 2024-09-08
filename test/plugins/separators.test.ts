@@ -1,11 +1,25 @@
-import { Configuration } from '../testConfiguration';
 import { newTest } from '../testSimplifier';
 import { cleanUpWorkspace, setupWorkspace } from '../testUtils';
 
 suite('separators plugin', () => {
-  suiteSetup(async () => {
-    const configuration = new Configuration();
-    await setupWorkspace(configuration, '.js');
+  setup(async () => {
+    await setupWorkspace({
+      config: {
+        targets: {
+          enable: true,
+          bracketObjects: { enable: true },
+          smartQuotes: {
+            enable: true,
+            breakThroughLines: true,
+            aIncludesSurroundingSpaces: true,
+          },
+          separatorObjects: {
+            enable: true,
+          },
+        },
+      },
+      fileExtension: '.js',
+    });
   });
   suiteTeardown(cleanUpWorkspace);
   // test quotes types

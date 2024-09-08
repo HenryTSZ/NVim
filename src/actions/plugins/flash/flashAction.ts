@@ -26,10 +26,11 @@ import {
   updateViewMarkers,
 } from './flashMarker';
 import { createFlash } from './flash';
+
 @RegisterAction
 class FlashCommand extends BaseCommand {
   modes = [Mode.Normal, Mode.Visual, Mode.VisualLine, Mode.VisualBlock];
-  keys = ['f'];
+  keys = configuration.flash.enable ? ['f'] : [];
   override actionType = 'motion' as const;
 
   public override doesActionApply(vimState: VimState, keysPressed: string[]) {

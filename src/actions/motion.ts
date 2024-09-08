@@ -836,7 +836,7 @@ function findHelper(
 
 @RegisterAction
 class MoveFindForward extends BaseMovement {
-  keys = ['\\', '<character>'];
+  keys = [configuration.flash.enable ? '\\' : 'f', '<character>'];
 
   public override doesActionApply(vimState: VimState, keysPressed: string[]): boolean {
     return super.doesActionApply(vimState, keysPressed);
