@@ -166,4 +166,5 @@ export class Configuration implements IConfiguration {
   handleKeys = {
     '<C-d>': true,
   };
+  langmap = '';
 }

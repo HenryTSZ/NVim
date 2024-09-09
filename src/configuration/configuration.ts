@@ -20,7 +20,6 @@ import {
 } from './iconfiguration';
 
 import { SUPPORT_VIMRC } from 'platform/constants';
-import { Langmap } from './langmap';
 import * as packagejson from '../../package.json';
 
 // https://stackoverflow.com/questions/51465182/how-to-remove-index-signature-using-mapped-types/51956054#51956054
@@ -112,6 +111,11 @@ class Configuration implements IConfiguration {
     'underline-thin': vscode.TextEditorCursorStyle.UnderlineThin,
   };
 
+  private loadListeners: Array<() => void> = [];
+  public addLoadListener(listener: () => void): void {
+    this.loadListeners.push(listener);
+  }
+
   public async load(): Promise<ValidatorResults> {
     const vimConfigs: { [key: string]: any } = Globals.isTesting
       ? Globals.mockConfiguration
@@ -198,7 +202,9 @@ class Configuration implements IConfiguration {
     void VSCodeContext.set('vim.overrideCopy', this.overrideCopy);
     void VSCodeContext.set('vim.overrideCtrlC', this.overrideCopy || this.useCtrlKeys);
 
-    Langmap.updateLangmap(this.langmap);
+    // workaround for circular dependency that would
+    // prevent packaging if we simply called `updateLangmap(configuration.langmap);`
+    this.loadListeners.forEach((listener) => listener());
 
     return validatorResults;
   }
@@ -520,6 +526,8 @@ class Configuration implements IConfiguration {
   commandLineModeKeyBindingsMap: Map<string, IKeyRemapping> = new Map();
 
   // langmap
+  langmapBindingsMap: Map<string, string> = new Map();
+  langmapReverseBindingsMap: Map<string, string> = new Map();
   langmap = '';
 
   get textwidth(): number {

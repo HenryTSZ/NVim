@@ -171,6 +171,19 @@ This PR is to support kill ring feature, and default binding to activate yanking
 
 - Fix [VSCodeVim#8576](https://github.com/VSCodeVim/Vim/issues/8576) Cursor position is broken at v1.26.0
 
+## Unreleased
+
+### Added
+
+- Support `langmap` ([@Opisek](https://github.com/Opisek)).
+- Partial support for expressions, `:let`, and `:ec[ho]` ([@J-Fields](https://github.com/J-Fields)).
+
+## [v1.28.1](https://github.com/vscodevim/vim/tree/v1.28.1) (2024-09-07)
+
+### Fixed
+
+- Fixed `h` with unicode surrogate pairs ([@semicube](https://github.com/semicube)).
+
 ## [v1.28.0](https://github.com/vscodevim/vim/tree/v1.28.0) (2024-08-25)
 
 ### Added
