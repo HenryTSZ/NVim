@@ -1,5 +1,27 @@
 # Change Log
 
+## [v2.1.9](https://github.com/HenryTSZ/NVim/tree/v2.1.9) (2024-09-09)
+
+### Added
+
+- [Implement basic separator targets from `targets.vim`](https://github.com/VSCodeVim/Vim/pull/9127)
+
+### Fixed
+
+- fixes flash ignorecase = true, the case of the label is different from that of the next search character & add test
+- fixes gB When the word are not in current view, It flashed the view to the selected word but jump back to the original one.
+
+merge VSCodeVim/master
+
+### Added
+
+- Support `langmap` ([@Opisek](https://github.com/Opisek)).
+- Partial support for expressions, `:let`, and `:ec[ho]` ([@J-Fields](https://github.com/J-Fields)).
+
+### Fixed
+
+- Fixed `h` with unicode surrogate pairs ([@semicube](https://github.com/semicube)).
+
 ## [v2.1.8](https://github.com/HenryTSZ/NVim/tree/v2.1.8) (2024-08-26)
 
 ### Fixed
