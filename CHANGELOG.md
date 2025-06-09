@@ -1,5 +1,9 @@
 # Change Log
 
+## [v2.2.0](https://github.com/HenryTSZ/NVim/tree/v2.2.0) (2025-06-09)
+
+change README.md
+
 ## [v2.1.9](https://github.com/HenryTSZ/NVim/tree/v2.1.9) (2024-09-09)
 
 ### Added
