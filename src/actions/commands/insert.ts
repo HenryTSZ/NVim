@@ -40,6 +40,7 @@ export class CommandEscInsertMode extends BaseCommand {
 
   public override async exec(position: Position, vimState: VimState): Promise<void> {
     void vscode.commands.executeCommand('closeParameterHints');
+    void vscode.commands.executeCommand('editor.action.inlineSuggest.hide');
 
     vimState.cursors = vimState.cursors.map((x) => x.withNewStop(x.stop.getLeft()));
     if (vimState.returnToInsertAfterCommand && position.character !== 0) {
@@ -413,7 +414,7 @@ export class InsertCharAbove extends BaseCommand {
     }
 
     const charPos = position.getUp();
-    if (charPos.isLineEnd()) {
+    if (charPos.isLineEnd(vimState.document)) {
       return;
     }
 
@@ -434,7 +435,7 @@ export class InsertCharBelow extends BaseCommand {
     }
 
     const charPos = position.getDown();
-    if (charPos.isLineEnd()) {
+    if (charPos.isLineEnd(vimState.document)) {
       return;
     }
 

@@ -499,8 +499,8 @@ export class Remapper implements IRemapper {
             commandArgs = Array.isArray(command.args)
               ? (command.args as string[])
               : command.args
-              ? [command.args]
-              : [];
+                ? [command.args]
+                : [];
           }
 
           if (commandString.slice(0, 1) === ':') {
@@ -516,7 +516,7 @@ export class Remapper implements IRemapper {
             } else {
               throw VimError.fromCode(ErrorCode.NotAnEditorCommand, commandString);
             }
-            await modeHandler.updateView();
+            modeHandler.updateView();
           } else {
             await vscode.commands.executeCommand(commandString, ...commandArgs);
           }

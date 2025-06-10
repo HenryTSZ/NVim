@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import { getAndUpdateModeHandler } from '../extension';
 import { ModeHandler } from '../src/mode/modeHandler';
-import { assertEqualLines, cleanUpWorkspace, setupWorkspace } from './testUtils';
+import { assertEqualLines, setupWorkspace } from './testUtils';
 import { newTest } from './testSimplifier';
 
 suite('Multicursor', () => {
@@ -11,8 +11,6 @@ suite('Multicursor', () => {
     await setupWorkspace();
     modeHandler = (await getAndUpdateModeHandler())!;
   });
-
-  teardown(cleanUpWorkspace);
 
   test('can add multiple cursors below', async () => {
     await modeHandler.handleMultipleKeyEvents('i11\n22'.split(''));
@@ -133,8 +131,6 @@ suite('Multicursor with remaps', () => {
     });
   });
 
-  teardown(cleanUpWorkspace);
-
   newTest({
     title: "Using 'jjk' mapped to '<Esc>' doesn't leave trailing characters",
     start: ['o|ne', 'two'],
@@ -158,8 +154,6 @@ suite('Multicursor selections', () => {
     });
   });
 
-  teardown(cleanUpWorkspace);
-
   newTest({
     title:
       'Can handle combined multicursor selections without leaving ghost selection changes behind',
@@ -169,7 +163,8 @@ suite('Multicursor selections', () => {
   });
 
   newTest({
-    title: 'Multiple cursors are preserved after inserting before a block selection and then pressing escape once',
+    title:
+      'Multiple cursors are preserved after inserting before a block selection and then pressing escape once',
     start: ['|testing', 'testing'],
     keysPressed: 'gbgbI<Esc>ifoo',
     end: ['foo|testing', 'footesting'],

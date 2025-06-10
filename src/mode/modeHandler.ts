@@ -12,6 +12,7 @@ import { IBaseAction } from '../actions/types';
 import { Cursor } from '../common/motion/cursor';
 import { configuration } from '../configuration/configuration';
 import { decoration } from '../configuration/decoration';
+import { isLiteralMode, remapKey } from '../configuration/langmap';
 import { Notation } from '../configuration/notation';
 import { Remappers } from '../configuration/remapper';
 import { Jump } from '../jumps/jump';
@@ -44,7 +45,6 @@ import {
   InsertCharAbove,
   InsertCharBelow,
 } from './../actions/commands/insert';
-import { PairMatcher } from './../common/matching/matcher';
 import { earlierOf, laterOf } from './../common/motion/position';
 import { ForceStopRemappingError, VimError } from './../error';
 import { Register, RegisterMode } from './../register/register';
@@ -61,7 +61,7 @@ import {
   isStatusBarMode,
   isVisualMode,
 } from './mode';
-import { isLiteralMode, remapKey } from '../configuration/langmap';
+import { OurSelectionsUpdate, hashSelections } from './ourSelectionsUpdates';
 
 interface IModeHandlerMap {
   get(editorId: Uri): ModeHandler | undefined;
@@ -77,6 +77,8 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
   public readonly vimState: VimState;
   public readonly remapState: RemapState;
 
+  public lastMovementFailed: boolean = false;
+
   public focusChanged = false;
 
   private searchDecorationCacheKey: { searchString: string; documentVersion: number } | undefined;
@@ -89,7 +91,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
    * Used internally to ignore selection changes that were performed by us.
    * 'ignoreIntermediateSelections': set to true when running an action, during this time
    * all selections change events will be ignored.
-   * 'ourSelections': keeps track of our selections that will trigger a selection change event
+   * 'ourSelectionsUpdates': keeps track of our selections that will trigger a selection change event
    * so that we can ignore them.
    */
   public selectionsChanged = {
@@ -102,7 +104,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
      * keeps track of our selections that will trigger a selection change event
      * so that we can ignore them.
      */
-    ourSelections: Array<string>(),
+    ourSelectionsUpdates: Array<OurSelectionsUpdate>(),
   };
 
   /**
@@ -110,13 +112,10 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
    */
   private lastClickWasPastEol: boolean = false;
 
-  // TODO: clarify the difference between ModeHandler.currentMode and VimState.currentMode
   private _currentMode!: Mode;
-
-  get currentMode(): Mode {
+  private get currentMode(): Mode {
     return this._currentMode;
   }
-
   private async setCurrentMode(mode: Mode): Promise<void> {
     if (this.vimState.currentMode !== mode) {
       await this.vimState.setCurrentMode(mode);
@@ -273,7 +272,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
               Logger.trace('Updating Visual Selection!');
               this.vimState.cursorStopPosition = selection.active;
               this.vimState.cursorStartPosition = selection.anchor;
-              await this.updateView({ drawSelection: false, revealRange: false });
+              this.updateView({ drawSelection: false, revealRange: false });
 
               // Store selection for commands like gv
               this.vimState.lastVisualSelection = {
@@ -287,7 +286,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
               this.vimState.cursorStopPosition = selection.active;
               this.vimState.cursorStartPosition = selection.anchor;
               await this.setCurrentMode(Mode.Visual);
-              await this.updateView({ drawSelection: false, revealRange: false });
+              this.updateView({ drawSelection: false, revealRange: false });
 
               // Store selection for commands like gv
               this.vimState.lastVisualSelection = {
@@ -326,7 +325,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         } else if (
           e.kind === vscode.TextEditorSelectionChangeKind.Keyboard &&
           this.vimState.cursorStopPosition.isEqual(this.vimState.cursorStartPosition) &&
-          this.vimState.cursorStopPosition.getRight().isLineEnd() &&
+          this.vimState.cursorStopPosition.getRight().isLineEnd(this.vimState.document) &&
           this.vimState.cursorStopPosition.getLineEnd().isEqual(selection.active)
         ) {
           // We get here when we use a 'cursorMove' command (that is considered a selection changed
@@ -351,7 +350,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         this.vimState.cursorStopPosition = selection.active;
         this.vimState.cursorStartPosition = selection.anchor;
         this.vimState.desiredColumn = selection.active.character;
-        await this.updateView({ drawSelection: false, revealRange: false });
+        this.updateView({ drawSelection: false, revealRange: false });
       }
       return;
     }
@@ -606,14 +605,14 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     // If we are handling a remap and the last movement failed stop handling the remap
     // and discard the rest of the keys. We throw an Exception here to stop any other
     // remapping handling steps and go straight to the 'finally' step of the remapper.
-    if (this.remapState.isCurrentlyPerformingRemapping && this.vimState.lastMovementFailed) {
-      this.vimState.lastMovementFailed = false;
+    if (this.remapState.isCurrentlyPerformingRemapping && this.lastMovementFailed) {
+      this.lastMovementFailed = false;
       throw new ForceStopRemappingError('Last movement failed');
     }
 
     // Reset lastMovementFailed. Anyone who needed it has probably already handled it.
     // And keeping it past this point would make any following remapping force stop.
-    this.vimState.lastMovementFailed = false;
+    this.lastMovementFailed = false;
 
     if (!handledAsAction) {
       // There was no action run yet but we still want to update the view to be able
@@ -634,7 +633,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         // TODO: this call to updateView is only used to update the virtualCharacter and halfBlock
         // cursor decorations, if in the future we split up the updateView function there should
         // be no need to call all of it.
-        await this.updateView({ drawSelection: false, revealRange: false });
+        this.updateView({ drawSelection: false, revealRange: false });
       }
     }
   }
@@ -748,7 +747,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     }
 
     // Update view
-    await this.updateView();
+    this.updateView();
 
     if (action.isJump) {
       globalState.jumpTracker.recordJump(
@@ -855,9 +854,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
       }
     }
 
-    ranRepeatableAction =
-      (ranRepeatableAction && this.vimState.currentMode === Mode.Normal) ||
-      this.createUndoPointForBrackets();
+    ranRepeatableAction &&= this.vimState.currentMode === Mode.Normal;
 
     // We don't want to record a repeatable action when exiting from these modes
     // by pressing <Esc>
@@ -910,7 +907,9 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
       this.vimState.cursors = this.vimState.cursors.map((c) =>
         c.start.isBeforeOrEqual(c.stop)
           ? c.withNewStop(
-              c.stop.isLineEnd() ? c.stop.getRightThroughLineBreaks() : c.stop.getRight(),
+              c.stop.isLineEnd(this.vimState.document)
+                ? c.stop.getRightThroughLineBreaks()
+                : c.stop.getRight(),
             )
           : c,
       );
@@ -996,23 +995,27 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
           !this.vimState.returnToInsertAfterCommand &&
           (this.vimState.currentMode === Mode.Normal || isVisualMode(this.vimState.currentMode))
         ) {
-          const currentLineLength = TextEditor.getLineLength(cursor.stop.line);
+          const currentStopLineLength = TextEditor.getLineLength(cursor.stop.line);
           const currentStartLineLength = TextEditor.getLineLength(cursor.start.line);
 
           // When in visual mode you can move the cursor past the last character in order
           // to select that character. We use this offset to allow for that, otherwise
           // we would consider the position invalid and change it to the left of the last
           // character.
-          const offsetAllowed =
-            isVisualMode(this.vimState.currentMode) && currentLineLength > 0 ? 1 : 0;
-          if (cursor.start.character >= currentStartLineLength) {
+          const offsetStartAllowed =
+            isVisualMode(this.vimState.currentMode) && currentStartLineLength > 0 ? 1 : 0;
+          const offsetStopAllowed =
+            isVisualMode(this.vimState.currentMode) && currentStopLineLength > 0 ? 1 : 0;
+
+          if (cursor.start.character >= currentStartLineLength + offsetStartAllowed) {
             cursor = cursor.withNewStart(
               cursor.start.withColumn(Math.max(currentStartLineLength - 1, 0)),
             );
           }
-
-          if (cursor.stop.character >= currentLineLength + offsetAllowed) {
-            cursor = cursor.withNewStop(cursor.stop.withColumn(Math.max(currentLineLength - 1, 0)));
+          if (cursor.stop.character >= currentStopLineLength + offsetStopAllowed) {
+            cursor = cursor.withNewStop(
+              cursor.stop.withColumn(Math.max(currentStopLineLength - 1, 0)),
+            );
           }
         }
         return cursor;
@@ -1035,7 +1038,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
   }
 
   private async executeMovement(movement: BaseMovement): Promise<RecordedState> {
-    this.vimState.lastMovementFailed = false;
+    this.lastMovementFailed = false;
     const recordedState = this.vimState.recordedState;
     const cursorsToRemove: number[] = [];
 
@@ -1085,7 +1088,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
       } else {
         if (result.failed) {
           this.vimState.recordedState = new RecordedState();
-          this.vimState.lastMovementFailed = true;
+          this.lastMovementFailed = true;
         }
 
         if (result.removed) {
@@ -1230,12 +1233,11 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         recordedState.actionsRun = actions.slice(0, i + 1);
         await this.runAction(recordedState, action);
 
-        if (this.vimState.lastMovementFailed) {
-          // TODO: Shouldn't this be `break`? Can't this leave us in a very bad state?
-          return;
+        if (this.lastMovementFailed) {
+          break;
         }
 
-        await this.updateView();
+        this.updateView();
         if (
           replayMode === ReplayMode.Replace &&
           !(j === transformation.count - 1 && i === actions.length - 1)
@@ -1274,11 +1276,11 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         this.vimState.recordedState = recordedState;
       }
 
-      if (this.vimState.lastMovementFailed) {
+      if (this.lastMovementFailed) {
         break;
       }
 
-      await this.updateView();
+      this.updateView();
 
       if (action.isJump) {
         globalState.jumpTracker.recordJump(originalLocation, Jump.fromStateNow(this.vimState));
@@ -1289,7 +1291,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     this.vimState.cursorsInitialState = this.vimState.cursors;
   }
 
-  public updateSearchHighlights(showHighlights: boolean) {
+  private updateSearchHighlights(showHighlights: boolean) {
     const cacheKey = this.searchDecorationCacheKey;
     this.searchDecorationCacheKey = undefined;
 
@@ -1315,6 +1317,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         // If there are no decorations from the command line, get decorations for previous SearchState
         decorations = getDecorationsForSearchMatchRanges(
           globalState.searchState.getMatchRanges(this.vimState),
+          this.vimState.document,
         );
         this.searchDecorationCacheKey = {
           searchString: globalState.searchState.searchString,
@@ -1338,12 +1341,12 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     );
   }
 
-  public async updateView(
+  public updateView(
     args: { drawSelection: boolean; revealRange: boolean } = {
       drawSelection: true,
       revealRange: true,
     },
-  ): Promise<void> {
+  ): void {
     // Draw selection (or cursor)
     if (args.drawSelection) {
       let selectionMode: Mode = this.vimState.currentMode;
@@ -1459,16 +1462,11 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         );
 
       if (willTriggerChange) {
-        const selectionsHash = selections.reduce(
-          (hash, s) =>
-            hash +
-            `[${s.anchor.line}, ${s.anchor.character}; ${s.active.line}, ${s.active.character}]`,
-          '',
-        );
-        this.selectionsChanged.ourSelections.push(selectionsHash);
+        const selectionsHash = hashSelections(selections);
+        this.selectionsChanged.ourSelectionsUpdates.push({ selectionsHash, updatedAt: Date.now() });
         Logger.trace(
           `Adding selection change to be ignored! (total: ${
-            this.selectionsChanged.ourSelections.length
+            this.selectionsChanged.ourSelectionsUpdates.length
           }) Hash: ${selectionsHash}, Selections: ${selections[0].anchor.toString()}, ${selections[0].active.toString()}`,
         );
       }
@@ -1477,7 +1475,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     }
 
     // cursor style
-    let cursorStyle = configuration.getCursorStyleForMode(Mode[this.currentMode]);
+    let cursorStyle = configuration.getCursorStyleForMode(this.currentMode);
     if (!cursorStyle) {
       const cursorType = getCursorType(
         this.vimState,
@@ -1631,7 +1629,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         };
 
         for (const { stop: cursorStop } of this.vimState.cursors) {
-          if (cursorStop.isLineEnd()) {
+          if (cursorStop.isLineEnd(this.vimState.document)) {
             iModeVirtualCharDecorationOptions.push({
               range: new vscode.Range(cursorStop, cursorStop.getLineEndIncludingEOL()),
               renderOptions: eolRenderOptions,
@@ -1715,12 +1713,7 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
       this.currentMode === Mode.EasyMotionInputMode &&
       configuration.easymotionDimBackground &&
       this.vimState.easyMotion.searchAction instanceof SearchByNCharCommand
-        ? [
-            new vscode.Range(
-              TextEditor.getDocumentBegin(),
-              TextEditor.getDocumentEnd(this.vimState.document),
-            ),
-          ]
+        ? [TextEditor.getDocumentRange(this.vimState.document)]
         : [];
     const easyMotionHighlightRanges =
       this.currentMode === Mode.EasyMotionInputMode &&
@@ -1759,46 +1752,6 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
     if (!/\s+/.test(this.vimState.document.getText(range))) {
       void vscode.commands.executeCommand('editor.action.wordHighlight.trigger');
     }
-  }
-
-  // Return true if a new undo point should be created based on brackets and parentheses
-  private createUndoPointForBrackets(): boolean {
-    // }])> keys all start a new undo state when directly next to an {[(< opening character
-    const key =
-      this.vimState.recordedState.actionKeys[this.vimState.recordedState.actionKeys.length - 1];
-
-    if (key === undefined) {
-      return false;
-    }
-
-    if (this.vimState.currentMode === Mode.Insert) {
-      // Check if the keypress is a closing bracket to a corresponding opening bracket right next to it
-      let result = PairMatcher.nextPairedChar(
-        this.vimState.cursorStopPosition,
-        key,
-        this.vimState,
-        false,
-      );
-      if (result !== undefined) {
-        if (this.vimState.cursorStopPosition.isEqual(result)) {
-          return true;
-        }
-      }
-
-      result = PairMatcher.nextPairedChar(
-        this.vimState.cursorStopPosition.getLeft(),
-        key,
-        this.vimState,
-        false,
-      );
-      if (result !== undefined) {
-        if (this.vimState.cursorStopPosition.getLeft(2).isEqual(result)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
   }
 
   dispose() {

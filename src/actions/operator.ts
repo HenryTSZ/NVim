@@ -283,7 +283,7 @@ class FilterOperator extends BaseOperator {
     if (vimState.currentMode === Mode.Normal) {
       vimState.cursorStopPosition = start;
     } else {
-      vimState.cursors = vimState.cursorsInitialState;
+      vimState.cursors = [...vimState.cursorsInitialState];
     }
 
     const previousMode = vimState.currentMode;
@@ -670,7 +670,7 @@ export class ChangeOperator extends BaseOperator {
     if (vimState.currentRegisterMode === RegisterMode.LineWise) {
       start = start.getLineBegin();
       end = end.getLineEnd();
-    } else if (vimState.currentMode === Mode.Visual && end.isLineEnd()) {
+    } else if (vimState.currentMode === Mode.Visual && end.isLineEnd(vimState.document)) {
       end = end.getRightThroughLineBreaks();
     } else {
       end = end.getRight();
