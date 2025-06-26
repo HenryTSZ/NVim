@@ -1,5 +1,9 @@
 # Change Log
 
+## [v2.2.2](https://github.com/HenryTSZ/NVim/tree/v2.2.2) (2025-06-12)
+
+change icon
+
 ## [v2.2.1](https://github.com/HenryTSZ/NVim/tree/v2.2.1) (2025-06-10)
 
 merge VSCodeVim/master
